@@ -8,17 +8,18 @@ import android.os.Bundle;
 
 public class ResultListActivity extends AppCompatActivity {
 
-    private String term;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        String term;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_list);
 
         // 画面遷移時のデータが空でない場合
         if (getIntent().hasExtra("terms")) {
             // Key:termsにデータがあればValueを代入
-            String term = getIntent().getStringExtra("terms");
+            term = getIntent().getStringExtra("terms");
             if (term.length() == 0) {
                 term = "Android";
             }
