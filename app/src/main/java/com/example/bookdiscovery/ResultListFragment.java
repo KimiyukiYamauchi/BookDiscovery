@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -45,14 +44,8 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
 
     // xmlファイルのコンポーネントと関連付ける要素
     private ListView resultListView;
-    // ListViewの表示内容を管理するクラス
-    private ResultListAdapter adapter;
-    // OkHttp通信クライアント
-    private OkHttpClient okHttpClient;
     // メインスレッドに戻ってくるためのHandler
     private Handler handler;
-    // MainActivityから渡されたデータを保持する
-    private String term;
 
     // スタティックコンストラクタ
     public static ResultListFragment getInstance(String term) {
@@ -89,7 +82,7 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
         // Handlerをインスタンス化
         handler = new Handler();
         // 検索文字列変数を初期化
-        term = "Android";
+        String term = "Android";
         // 連携データが存在するか確認
         if (getArguments() != null) {
             // 連携データ内から"term"キーのデータを代入、なければ"Android"と文字列を代入
@@ -103,26 +96,27 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
         // xmlファイルのコンポーネントと関連付け
         resultListView =  getView().findViewById(R.id.FragmentResultListView);
         // OkHttp通信クライアントをインスタンス化
-        okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient();
         // 通信するための情報
         // MainActivityで入力された文字列で検索する様修正
         Request request = new Request.Builder().url("https://www.googleapis.com/books/v1/volumes?q=" + term).build();
         // データの取得後の命令を実装
         Callback callBack = new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, IOException e) {
                 // 失敗した時の命令
                 // 通信に失敗した原因をログに出力
                 Log.e("failure API Response", e.getLocalizedMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, Response response) throws IOException {
                 // 成功した時の命令
                 // Google Books APIから取得したデータをログに出力
                 // Jsonのパースが失敗してアプリの強制終了を回避する機能
                 try {
                     // JsonデータをJSONObjectに変換
+                    assert response.body() != null;
                     JSONObject rootJson = new JSONObject(response.body().string());
                     // Jsonデータから蔵書リストデータ"items"を取得
                     JSONArray items = rootJson.getJSONArray("items");
@@ -224,7 +218,7 @@ public class ResultListFragment extends Fragment implements AdapterView.OnItemCl
             ft.commit();
 
             // ListViewに表示する情報をまとめるAdapterをインスタンス化
-            adapter = new ResultListAdapter(getContext(), resultList);
+            ResultListAdapter adapter = new ResultListAdapter(getContext(), resultList);
             // ListViewに表示情報をまとめたAdapterをセット
             resultListView.setAdapter(adapter);
             // ListViewに行をクリックした時のイベントを登録

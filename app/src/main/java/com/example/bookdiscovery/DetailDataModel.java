@@ -3,8 +3,6 @@ package com.example.bookdiscovery;
 import java.util.List;
 
 public class DetailDataModel {
-    // 蔵書単体リンク
-    public String selfLink;
     // 蔵書概要データ
     public VolumeInfo volumeInfo;
 
@@ -25,7 +23,7 @@ public class DetailDataModel {
         // 蔵書サムネイル画像URL
         public ImageLinks imageLinks;
         // Google BooksへのリンクURL
-        public String previewLink;
+//        public String previewLink;
         // Play StoreへのリンクURL
         public String infoLink;
     }

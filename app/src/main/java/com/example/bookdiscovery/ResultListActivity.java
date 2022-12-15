@@ -18,7 +18,7 @@ public class ResultListActivity extends AppCompatActivity {
         // 画面遷移時のデータが空でない場合
         if (getIntent().hasExtra("terms")) {
             // Key:termsにデータがあればValueを代入
-            term = getIntent().getStringExtra("terms");
+            String term = getIntent().getStringExtra("terms");
             if (term.length() == 0) {
                 term = "Android";
             }

@@ -10,8 +10,8 @@ import java.util.List;
 
 public class ResultListAdapter extends android.widget.BaseAdapter {
 
-    private List<ResultListModel> resultList;
-    private LayoutInflater layoutInflater;
+    private final List<ResultListModel> resultList;
+    private final LayoutInflater layoutInflater;
 
     // コンストラクタ
     public ResultListAdapter(Context context, List<ResultListModel> resultList) {

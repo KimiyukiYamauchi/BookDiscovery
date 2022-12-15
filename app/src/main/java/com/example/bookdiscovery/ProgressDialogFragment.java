@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ProgressDialogFragment#newInstance} factory method to
@@ -64,7 +66,7 @@ public class ProgressDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // ソフトバックボタンを無効化
-        getDialog().setCancelable(false);
+        Objects.requireNonNull(getDialog()).setCancelable(false);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_progress_dialog, container, false);
     }
@@ -73,17 +75,13 @@ public class ProgressDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // ダイアログ表示するレイアウトを生成
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_progress_dialog, null, false);
+        View view = getActivity().getLayoutInflater()
+                .inflate(R.layout.fragment_progress_dialog, null, false);
 
         // アラートダイアログビルダーを使ってボタン付きのダイアログを生成
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setPositiveButton("キャンセル", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        getActivity().finish();
-                    }
-                })
+                .setPositiveButton("キャンセル", (dialogInterface, i) -> getActivity().finish())
                 .setCancelable(false);
         // 表示するダイアログを生成して返却
         return builder.create();

@@ -9,15 +9,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 import io.realm.RealmResults;
 
 public class HistoryRecyclerAdapter extends RecyclerView.Adapter<HistoryRecyclerAdapter.HistoryHolder> {
     // 表示に必要なクラスを宣言
-    private Context context;
-    private LayoutInflater inflater;
-    private RealmResults<SearchHistoryModel> historyData;
+    private final Context context;
+    private final LayoutInflater inflater;
+    private final RealmResults<SearchHistoryModel> historyData;
 
     // コンストラクタ
     public HistoryRecyclerAdapter(Context context, RealmResults<SearchHistoryModel> historyData) {
@@ -29,8 +27,9 @@ public class HistoryRecyclerAdapter extends RecyclerView.Adapter<HistoryRecycler
     }
 
     // 表示するレイアウトを指定するメソッド
+    @NonNull
     @Override
-    public HistoryHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HistoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // row_history_recycleのレイアウトをインスタンス化
         View view = inflater.inflate(R.layout.row_history_recycle, parent, false);
         // HistoryHolderクラスをインスタンス化して返却する

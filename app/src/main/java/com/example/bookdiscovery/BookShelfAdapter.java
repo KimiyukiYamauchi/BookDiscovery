@@ -11,8 +11,8 @@ import java.util.List;
 
 public class BookShelfAdapter extends BaseAdapter {
 
-    private List<ResultListModel> resultList;
-    private LayoutInflater layoutInflater;
+    private final List<ResultListModel> resultList;
+    private final LayoutInflater layoutInflater;
 
     public BookShelfAdapter(Context context, List<ResultListModel> resultList) {
         this.resultList = resultList;

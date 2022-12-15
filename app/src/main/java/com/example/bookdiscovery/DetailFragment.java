@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,9 +59,6 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
     private TextView pageText;
     private TextView publishDateText;
     private ImageView detailImage;
-    private Button transWebviewBtn;
-    private Button transitionBrowserBtn;
-    private Button registdbBtn;
     // Play Store リンクURL
     private String infoLink;
     // 個体リンクのURL
@@ -137,9 +133,9 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         pageText = getView().findViewById(R.id.DetailPageText);
         publishDateText = getView().findViewById(R.id.DetailPublishDateText);
         detailImage = getView().findViewById(R.id.DetailImage);
-        transWebviewBtn = getView().findViewById(R.id.TransitionWebView);
-        transitionBrowserBtn = getView().findViewById(R.id.TransitionBrouser);
-        registdbBtn = getView().findViewById(R.id.RegistDB);
+        Button transWebviewBtn = getView().findViewById(R.id.TransitionWebView);
+        Button transitionBrowserBtn = getView().findViewById(R.id.TransitionBrouser);
+        Button registdbBtn = getView().findViewById(R.id.RegistDB);
 
         // クリック時にブラウザアプリでURLを表示する処理を実装
         transitionBrowserBtn.setOnClickListener(this);
@@ -159,13 +155,13 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
         // データの取得後の命令を実装
         Callback callBack = new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(@NonNull Call call, IOException e) {
                 // 通信に失敗した原因をログに出力
                 Log.e("failure API Response", e.getLocalizedMessage());
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, Response response) throws IOException {
                 // JsonパースライブラリGsonのインスタンス化
                 Gson gson = new Gson();
                 // 返却されたJson文字列を一旦変数に代入
@@ -195,7 +191,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
             // BTWebViewFragmentをインスタンス化
             BTWebViewFragment fragment = BTWebViewFragment.getInstance(infoLink);
             // 別のFragmentに遷移するためのクラスをインスタンス化
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            FragmentTransaction ft = getParentFragmentManager().beginTransaction();
             // 現在、DetailFragmentを表示しているR.id.FragmentContainerをBTWebViewFragmentに置き換え
             ft.replace(R.id.FragmentContainer, fragment);
             // 表示していたFragmentをバックスタックに追加
@@ -240,14 +236,21 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
             } else {
                 stmt.bindString(2, "");
             }
-            String authorString = new String();
-            // 著作者名が複数設定されていう場合があるので繰り返し処理で全て表示する
-            for (String author : detailData.volumeInfo.authors) {
-                authorString += author + ",";
+            String authorString = "";
+            if (detailData.volumeInfo.authors != null) {
+                // 著作者名が複数設定されていう場合があるので繰り返し処理で全て表示する
+                for (String author : detailData.volumeInfo.authors) {
+                    authorString += author + ",";
+                }
+                authorString = authorString.substring(0, authorString.length()-1);
             }
             stmt.bindString(3, authorString);
             stmt.bindString(4, detailData.volumeInfo.publishedDate);
-            stmt.bindString(5, detailData.volumeInfo.description);
+            if (detailData.volumeInfo.description != null) {
+                stmt.bindString(5, detailData.volumeInfo.description);
+            } else {
+                stmt.bindString(5, "");
+            }
             stmt.bindLong(6, detailData.volumeInfo.pageCount);
             stmt.bindString(7, detailData.volumeInfo.imageLinks.smallThumbnail);
             stmt.bindString(8, detailData.volumeInfo.imageLinks.thumbnail);
@@ -292,6 +295,7 @@ public class DetailFragment extends Fragment implements View.OnClickListener {
                 for (String author : detailData.volumeInfo.authors) {
                     authorString += author + ",";
                 }
+                authorString = authorString.substring(0, authorString.length()-1);
                 authorText.setText(authorString);
             }
             // ページ数を反映

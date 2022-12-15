@@ -17,8 +17,6 @@ public class BTWebViewFragment extends Fragment {
     /// データ連携用定数
     public static final String BUNDLE_URL = "BUNDLE_URL";
 
-    // バインドコンポーネント
-    private WebView webview;
     // メンバ変数
     private String defaultUrl;
 
@@ -36,14 +34,7 @@ public class BTWebViewFragment extends Fragment {
         return fragment;
     }
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,7 +55,7 @@ public class BTWebViewFragment extends Fragment {
         }
 
         // レイアウトのコンポーネントをバインド
-        webview = getView().findViewById(R.id.FragmentWebView);
+        WebView webview = getView().findViewById(R.id.FragmentWebView);
         // 自身のWebViewで表示するためにWebViewClientをWebViewに設定
         webview.setWebViewClient(new WebViewClient());
         // URLの読み込み

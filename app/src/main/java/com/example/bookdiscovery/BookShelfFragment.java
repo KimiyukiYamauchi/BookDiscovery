@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +24,6 @@ import java.util.List;
  */
 public class BookShelfFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    // 検索結果一覧データ
-    private List<ResultListModel> resultList;
-
-    // xmlファイルのコンポーネントと関連付ける要素
-    private ListView resultListView;
-    // ListViewの表示内容を管理するクラス
-    private BookShelfAdapter adapter;
-
     // データベースヘルパーオブジェクト
     private DatabaseHelper _helper;
 
@@ -41,10 +32,8 @@ public class BookShelfFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     public static BookShelfFragment newInstance() {
-        // ResultListFragmentインスタンスを生成
-        BookShelfFragment fragment = new BookShelfFragment();
-        // 生成したResultListFragmentを返却
-        return fragment;
+        // 生成したBookShelfFragmentを返却
+        return new BookShelfFragment();
     }
 
     @Override
@@ -67,37 +56,43 @@ public class BookShelfFragment extends Fragment implements AdapterView.OnItemCli
         super.onViewCreated(view, savedInstanceState);
 
         // xmlファイルのコンポーネントと関連付け
-        resultListView =  getView().findViewById(R.id.FragmentBookShelfListView);
+        ListView  resultListView =  getView().findViewById(R.id.FragmentBookShelfListView);
 
         // データベースヘルパーオブジェクトからデータベース接続オブジェクトを取得
         SQLiteDatabase db = _helper.getWritableDatabase();
         // SQL文字列の用意。
         String sql = "SELECT * FROM books";
+
         // SQLの実行
         Cursor cursor = db.rawQuery(sql, null);
-
         // 蔵書モデルクラスリスト
-        resultList = new ArrayList<>();
-        // SQL実行の戻り値であるカーソルオブジェクトをスールさせてデータベース内のデータを取得
-        while (cursor.moveToNext()) {
-            // 蔵書データクラスをインスタンス化
-            ResultListModel resultData = new ResultListModel();
+        List<ResultListModel>  resultList = new ArrayList<>();
 
-            // カラムのインデックス値を取得。
-            int idxTitle = cursor.getColumnIndex("title");
-            // タイトルをモデルクラスに代入
-            resultData.title = cursor.getString(idxTitle);
-            // カラムのインデックス値を取得。
-            int idxsummary = cursor.getColumnIndex("description");
-            // サマリーをモデルクラスに代入
-            resultData.summary = cursor.getString(idxsummary);
+        try {
 
-            // 蔵書情報をリストに登録
-            resultList.add(resultData);
+            // SQL実行の戻り値であるカーソルオブジェクトをスールさせてデータベース内のデータを取得
+            while (cursor.moveToNext()) {
+                // 蔵書データクラスをインスタンス化
+                ResultListModel resultData = new ResultListModel();
+
+                // カラムのインデックス値を取得。
+                int idxTitle = cursor.getColumnIndex("title");
+                // タイトルをモデルクラスに代入
+                resultData.title = cursor.getString(idxTitle);
+                // カラムのインデックス値を取得。
+                int idxsummary = cursor.getColumnIndex("description");
+                // サマリーをモデルクラスに代入
+                resultData.summary = cursor.getString(idxsummary);
+
+                // 蔵書情報をリストに登録
+                resultList.add(resultData);
+            }
+        } finally {
+            cursor.close();
         }
 
         // ListViewに表示する情報をまとめるAdapterをインスタンス化
-        adapter = new BookShelfAdapter(getContext(), resultList);
+        BookShelfAdapter adapter = new BookShelfAdapter(getContext(), resultList);
         // ListViewに表示情報をまとめたAdapterをセット
         resultListView.setAdapter(adapter);
         // ListViewに行をクリックした時のイベントを登録

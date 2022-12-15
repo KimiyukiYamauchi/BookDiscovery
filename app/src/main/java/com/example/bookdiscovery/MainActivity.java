@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import io.realm.Realm;
 
@@ -23,11 +24,7 @@ public class MainActivity extends AppCompatActivity {
     // 最後の検索文言を保持/取得するキー定数
     private final static String PREF_KEY = "LAST_TERM";
 
-    private Button bookSearchBtn;
-    private Button historyBtn;
     private EditText bookSearchEditor;
-    private Button bookShelfBtn;
-//    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +32,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // 蔵書検索ボタンをjavaプログラムで操作できるように名前をつける
-        bookSearchBtn = findViewById(R.id.BookSearchBtn);
+        Button bookSearchBtn = findViewById(R.id.BookSearchBtn);
         // 検索履歴ボタンを関連付ける
-        historyBtn = findViewById(R.id.HistoryBtn);
+        Button historyBtn = findViewById(R.id.HistoryBtn);
         bookSearchEditor = findViewById(R.id.BookSearchEdit);
-
         // 本棚ボタンを関連付ける
-        bookShelfBtn = findViewById(R.id.BookshelfBtn);
+        Button bookShelfBtn = findViewById(R.id.BookshelfBtn);
 
         View.OnClickListener bookSearchEvent = view -> {
             // コンソールログにボタンが押されたことを出力(表示)
@@ -64,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 // 現在時刻を文字列で取得する
                 Date now = new Date();
                 // 現在時刻を定まった形式で文字列に変換
-                String dateStr = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(now);
+                String dateStr = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.JAPANESE).format(now);
                 // 現在日時の文字列をカラムデータに登録
                 history.setSearchDate(dateStr);
                 // 検索履歴テーブルへのアクセスを終了
